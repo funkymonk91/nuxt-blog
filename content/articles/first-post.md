@@ -26,11 +26,17 @@ This is some more info
 This is some more info
 
 ## This is another heading
+this... is crazy
 
 This is some more info
 
 <info-box>
   <template #info-box>
-    This is a vue component inside markdown using slots
+  Continue from here: 
+    [This is a vue component inside markdown using slots](https://nuxtjs.org/blog/creating-blog-with-nuxt-content/#adding-a-code-block-to-your-post)
   </template>
 </info-box>
+
+```php[filename.php]
+$realCode = 'oh boy!';
+```
