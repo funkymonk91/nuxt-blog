@@ -1,25 +1,15 @@
 <template>
   <article>
-    <author :author="article.author"></author>
-
     <h1>{{ article.title }}</h1>
     <p>{{ article.description }}</p>
-    <img :src="article.image" :alt="article.alt" />
+    <img :src="article.img" :alt="article.alt" />
     <p>Article last updated: {{ formatDate(article.updatedAt) }}</p>
 
     <nuxt-content :document="article" />
 
-    <nav>
-      <ul>
-        <li v-for="link of article.toc" :key="link.id">
-          <NuxtLink
-            :to="`#${link.id}`"
-            :class="{ 'py-2': link.depth === 2, 'ml-2 pb-2': link.depth === 3 }"
-            >{{ link.text }}</NuxtLink
-          >
-        </li>
-      </ul>
-    </nav>
+    <author :author="article.author" />
+
+    <prev-next :prev="prev" :next="next" />
   </article>
 </template>
 
@@ -27,8 +17,13 @@
 export default {
   async asyncData({ $content, params }) {
     const article = await $content('articles', params.slug).fetch()
+    const [prev, next] = await $content('articles')
+      .only(['title', 'slug'])
+      .sortBy('createdAt', 'asc')
+      .surround(params.slug)
+      .fetch()
 
-    return { article }
+    return { article, prev, next }
   },
   methods: {
     formatDate(date) {
@@ -61,5 +56,11 @@ export default {
   width: 20px;
   height: 20px;
   background-size: 20px 20px;
+}
+.nuxt-content-highlight {
+  @apply relative;
+}
+.nuxt-content-highlight .filename {
+  @apply absolute right-0 text-gray-600 font-light z-10 mr-2 mt-1 text-sm;
 }
 </style>
